@@ -10,6 +10,7 @@ var cleared_tiles: Array[Vector2i] = []
 var plantation_tiles: Array[Vector2i] = []
 var harvested_tiles: Array[Vector2i] = []
 var money := 100
+var flood_risk := 0
 var income_per_plantation := 10
 
 
@@ -31,6 +32,10 @@ func _draw() -> void:
 				tile_color = Color("#b4a65a")
 				border_color = Color("#71652e")
 
+			if tile in harvested_tiles:
+				tile_color = Color("#817c55")
+				border_color = Color("#514d36")
+
 			draw_rect(tile_rect, tile_color, true)
 			draw_rect(tile_rect, border_color, false, 2.0)
 
@@ -39,7 +44,8 @@ func _draw() -> void:
 		var selected_rect := Rect2(selected_position, Vector2(TILE_SIZE, TILE_SIZE))
 		draw_rect(selected_rect, Color("#f5d547"), false, 4.0)
 		draw_string(ThemeDB.fallback_font, Vector2(80, 50), "Uang: $%d" % money, HORIZONTAL_ALIGNMENT_LEFT, -1, 24, Color.WHITE)
-
+		draw_string(ThemeDB.fallback_font, Vector2(80, 78), "Risiko Banjir: %d" % flood_risk, HORIZONTAL_ALIGNMENT_LEFT, -1, 20, Color.WHITE)
+		
 func _input(event: InputEvent) -> void:
 	if event is InputEventKey:
 		if event.keycode == KEY_H and event.pressed and not event.echo:
@@ -53,6 +59,7 @@ func _input(event: InputEvent) -> void:
 			if selected_tile.x >= 0 and selected_tile.y >= 0:
 				if selected_tile not in cleared_tiles:
 					cleared_tiles.append(selected_tile)
+					flood_risk += 1
 					queue_redraw()
 	if event is InputEventKey:
 		if event.keycode == KEY_P and event.pressed and not event.echo:
