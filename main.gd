@@ -8,6 +8,9 @@ const GRID_ORIGIN := Vector2(80, 100)
 var selected_tile := Vector2i(-1, -1)
 var cleared_tiles: Array[Vector2i] = []
 var plantation_tiles: Array[Vector2i] = []
+var harvested_tiles: Array[Vector2i] = []
+var money := 100
+var income_per_plantation := 10
 
 
 func _draw() -> void:
@@ -35,9 +38,17 @@ func _draw() -> void:
 		var selected_position := GRID_ORIGIN + Vector2(selected_tile) * TILE_SIZE
 		var selected_rect := Rect2(selected_position, Vector2(TILE_SIZE, TILE_SIZE))
 		draw_rect(selected_rect, Color("#f5d547"), false, 4.0)
+		draw_string(ThemeDB.fallback_font, Vector2(80, 50), "Uang: $%d" % money, HORIZONTAL_ALIGNMENT_LEFT, -1, 24, Color.WHITE)
 
 func _input(event: InputEvent) -> void:
 	if event is InputEventKey:
+		if event.keycode == KEY_H and event.pressed and not event.echo:
+			if selected_tile in plantation_tiles:
+				if selected_tile not in harvested_tiles:
+					harvested_tiles.append(selected_tile)
+					money += income_per_plantation
+					queue_redraw()
+		
 		if event.keycode == KEY_SPACE and event.pressed and not event.echo:
 			if selected_tile.x >= 0 and selected_tile.y >= 0:
 				if selected_tile not in cleared_tiles:
