@@ -1,0 +1,11 @@
+
+# Godot generated files
+.godot/
+.import/
+
+# Android build output
+/android/
+
+# Temporary files
+*.tmp
+*.bak
